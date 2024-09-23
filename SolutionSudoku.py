@@ -2,11 +2,8 @@ import numpy
 import copy
 
 b = numpy.load('data.npz')['data']
-print(b[3])
 
-a = b[3].tolist()
-
-aa = copy.deepcopy(a)
+a = b[5].tolist()
 
 # a = [[3, 0, 6, 5, 0, 8, 4, 0, 0],
 #     [5, 2, 0, 0, 0, 0, 0, 0, 0],
@@ -27,6 +24,8 @@ aa = copy.deepcopy(a)
 #      [8, 7, 0, 1, 0, 0, 0, 0, 0],
 #      [0, 5, 0, 3, 4, 0, 7, 0, 0],
 #      [0, 0, 0, 0, 0, 0, 0, 0, 6]]
+
+aa = copy.deepcopy(a)
 
 N = 9
 
@@ -49,13 +48,15 @@ def Check_Again():
                 for tmp in range(len(x[i][j])):
                     if (row[i][x[i][j][tmp]] == 1 or column[j][x[i][j][tmp]] == 1 or square[i//3][j//3][x[i][j][tmp]] == 1) and x[i][j][tmp] != 0:
                         x[i][j][tmp] = 0
-    return
-
 
 def The_Last_Free_Cell(i, j):
-    if len(x[i][j]) == 1 and row[i][x[i][j][0]] == 1 and column[j][x[i][j][0]] == 1 and square[i//3][j//3][x[i][j][0]] == 1:
+    if len(x[i][j]) == 1 and row[i][x[i][j][0]] == 0 and column[j][x[i][j][0]] == 0 and square[i//3][j//3][x[i][j][0]] == 0:
+        if x[i][j][0] != aa[i][j]:
+            return
+        
         print ("1 " + str(i) + " " + str(j) + " " + str(x[i][j][0]))
         print(x[i][j])
+
         a[i][j] = x[i][j][0]
         row[i][x[i][j][0]] = 1
         column[j][x[i][j][0]] = 1
@@ -78,6 +79,9 @@ def The_Last_Remaining_Cell_In_Row(i, j):
             return
         
         print ("2 " + str(i) + " " + str(j) + " " + str(num))
+        print (x[i][j]) 
+        print (colList)
+
         a[i][j] = num
         row[i][num] = 1
         column[j][num] = 1
@@ -101,6 +105,9 @@ def The_Last_Remaining_Cell_In_Column(i, j):
             return
         
         print ("3 " + str(i) + " " + str(j) + " " + str(num))
+        print (x[i][j]) 
+        print (rowList)
+
         a[i][j] = num
         row[i][num] = 1
         column[j][num] = 1
@@ -121,18 +128,21 @@ def The_Last_Remaining_Cell_In_Square(i, j):
             continue
         if len(squareList) == 0:
             return
-        if aa[i][i] != num:
+        if aa[i][j] != num:
             return
 
         print ("4 " + str(i) + " " + str(j) + " " + str(num))
         print (x[i][j]) 
         print (squareList)
+
         a[i][j] = num
         row[i][num] = 1
         column[j][num] = 1
         square[i//3][j//3][num] = 1
         return    
 
+
+# Soltion Sudoku
 def isSafe(aa, row, col, num):
     for x in range(9):
         if aa[row][x] == num:
@@ -169,6 +179,7 @@ def solveSudoku(aa, row, col):
         aa[row][col] = 0
     return False
 
+# Kiểm tra các cột, hàng, ô vuông cho phù hợp
 for i in range(0, 9):
     for j in range(0, 9):
         if a[i][j] != 0:
@@ -193,10 +204,11 @@ for i in range(0, 9):
 for i in range(0, 9):
     for j in range(0, 9):
         if a[i][j] == 0:
-            for value in range(0, 10):
+            for value in range(1, 10):
                 if row[i][value] != 1 and column[j][value] != 1 and square[i//3][j//3][value] != 1:
                     x[i][j].append(value)
 
+# Solution of Sudoku
 if (solveSudoku(aa, 0, 0)):
     for i in range(0, 9):
         for j in range(0, 9):
@@ -207,6 +219,8 @@ else:
 
 print()
 
+
+# Solving step by step
 for count in range(0, 200):
     Check_Again()
     Delete_Number_0()
@@ -214,13 +228,29 @@ for count in range(0, 200):
         for j in range(0, 9):
             if a[i][j] == 0:
                 The_Last_Free_Cell(i, j)
+    
+    Check_Again()
+    Delete_Number_0()
+    for i in range(0, 9):
+        for j in range(0, 9):
             if a[i][j] == 0:
                 The_Last_Remaining_Cell_In_Row(i, j)
+
+    Check_Again()
+    Delete_Number_0()
+    for i in range(0, 9):
+        for j in range(0, 9):
             if a[i][j] == 0:
                 The_Last_Remaining_Cell_In_Column(i, j)
+
+    Check_Again()
+    Delete_Number_0()
+    for i in range(0, 9):
+        for j in range(0, 9):
             if a[i][j] == 0:
                 The_Last_Remaining_Cell_In_Square(i, j)
 
+# Print Result and step Solving
 for i in range(0, 9):
     for j in range(0, 9):
         print(a[i][j], end = ' ')
