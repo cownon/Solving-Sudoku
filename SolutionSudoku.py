@@ -1,29 +1,11 @@
 import numpy
 import copy
 
+file = open('Result.txt', 'w')
+
 b = numpy.load('data.npz')['data']
 
-a = b[5].tolist()
-
-# a = [[3, 0, 6, 5, 0, 8, 4, 0, 0],
-#     [5, 2, 0, 0, 0, 0, 0, 0, 0],
-#     [0, 8, 7, 0, 0, 0, 0, 3, 1],
-#     [0, 0, 3, 0, 1, 0, 0, 8, 0],
-#     [9, 0, 0, 8, 6, 3, 0, 0, 5],
-#     [0, 5, 0, 0, 9, 0, 6, 0, 0],
-#     [1, 3, 0, 0, 0, 0, 2, 5, 0],
-#     [0, 0, 0, 0, 0, 0, 0, 7, 4],
-#     [0, 0, 5, 2, 0, 6, 3, 0, 0]]
-
-# a = [[4, 0, 1, 5, 0, 9, 0, 0, 0],
-#      [0, 0, 0, 0, 0, 0, 1, 4, 8],
-#      [3, 0, 6, 0, 0, 0, 0, 2, 0],
-#      [0, 3, 9, 0, 7, 0, 0, 0, 0],
-#      [2, 0, 0, 0, 0, 0, 0, 1, 0],
-#      [0, 0, 0, 0, 5, 0, 9, 0, 2],
-#      [8, 7, 0, 1, 0, 0, 0, 0, 0],
-#      [0, 5, 0, 3, 4, 0, 7, 0, 0],
-#      [0, 0, 0, 0, 0, 0, 0, 0, 6]]
+a = b[2000].tolist()
 
 aa = copy.deepcopy(a)
 
@@ -56,6 +38,7 @@ def The_Last_Free_Cell(i, j):
         
         print ("1 " + str(i) + " " + str(j) + " " + str(x[i][j][0]))
         print(x[i][j])
+        file.write("1 " + str(i) + " " + str(j) + " " + str(x[i][j][0]) + '\n')
 
         a[i][j] = x[i][j][0]
         row[i][x[i][j][0]] = 1
@@ -81,6 +64,7 @@ def The_Last_Remaining_Cell_In_Row(i, j):
         print ("2 " + str(i) + " " + str(j) + " " + str(num))
         print (x[i][j]) 
         print (colList)
+        file.write("2 " + str(i) + " " + str(j) + " " + str(num) + '\n')
 
         a[i][j] = num
         row[i][num] = 1
@@ -107,6 +91,7 @@ def The_Last_Remaining_Cell_In_Column(i, j):
         print ("3 " + str(i) + " " + str(j) + " " + str(num))
         print (x[i][j]) 
         print (rowList)
+        file.write("3 " + str(i) + " " + str(j) + " " + str(num) + '\n')
 
         a[i][j] = num
         row[i][num] = 1
@@ -134,6 +119,7 @@ def The_Last_Remaining_Cell_In_Square(i, j):
         print ("4 " + str(i) + " " + str(j) + " " + str(num))
         print (x[i][j]) 
         print (squareList)
+        file.write("4 " + str(i) + " " + str(j) + " " + str(num) + '\n')
 
         a[i][j] = num
         row[i][num] = 1
@@ -221,7 +207,7 @@ print()
 
 
 # Solving step by step
-for count in range(0, 200):
+for count in range(0, 100):
     Check_Again()
     Delete_Number_0()
     for i in range(0, 9):
@@ -260,3 +246,5 @@ for i in range(0, 9):
     for j in range(0, 9):
         if a[i][j] == 0:
             print(i, j, x[i][j])
+
+file.close()
