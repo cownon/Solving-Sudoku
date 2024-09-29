@@ -1,14 +1,22 @@
 import numpy
 import copy
+import random
 
+def Print_Matrix(matrix):
+    for i in range(0, 9):
+        for j in range(0, 9):
+            print(matrix[i][j], end = ' ')
+        print()
+
+# Đọc file Test và tạo file để lưu kết quả
 file = open('Result.txt', 'w')
-
 b = numpy.load('data.npz')['data']
-
-a = b[2000].tolist()
-
+test_code = random.randint(1, 10000)
+a = b[test_code].tolist()
+Print_Matrix(a)
 aa = copy.deepcopy(a)
 
+# Khởi tạo những giá trị cần thiết
 N = 9
 
 row = [[0 for _ in range(10)] for _ in range(10)]
@@ -17,12 +25,14 @@ square = [[[0 for _ in range(10)] for _ in range(3)] for _ in range(3)]
 
 x = [[[0 for _ in range(10)] for _ in range(10)] for _ in range(10)]
 
+# Xóa những số có giá trị 0 ở trong mảng những số có thể điền vào ô trống
 def Delete_Number_0():
     for i in range(0, 9):
         for j in range(0, 9):
             if a[i][j] == 0:
                 x[i][j] = [num for num in x[i][j] if num != 0]
 
+# Kiểm tra xem những giá trị có thể điền có đúng hay không
 def Check_Again():
     for i in range(0, 9):
         for j in range(0, 9):
@@ -31,6 +41,7 @@ def Check_Again():
                     if (row[i][x[i][j][tmp]] == 1 or column[j][x[i][j][tmp]] == 1 or square[i//3][j//3][x[i][j][tmp]] == 1) and x[i][j][tmp] != 0:
                         x[i][j][tmp] = 0
 
+# Điền vào ô chỉ còn duy nhất một số có thể điền vào
 def The_Last_Free_Cell(i, j):
     if len(x[i][j]) == 1 and row[i][x[i][j][0]] == 0 and column[j][x[i][j][0]] == 0 and square[i//3][j//3][x[i][j][0]] == 0:
         if x[i][j][0] != aa[i][j]:
@@ -44,7 +55,8 @@ def The_Last_Free_Cell(i, j):
         row[i][x[i][j][0]] = 1
         column[j][x[i][j][0]] = 1
         square[i//3][j//3][x[i][j][0]] = 1
-        
+
+# Điền vào ô trống giá trị mà ở hàng đó duy nhất ô đang xét có thể điền được        
 def The_Last_Remaining_Cell_In_Row(i, j):
     colList = []
     colList.clear()
@@ -71,7 +83,7 @@ def The_Last_Remaining_Cell_In_Row(i, j):
         column[j][num] = 1
         square[i//3][j//3][num] = 1
         return
-
+# Điền vào ô trống giá trị mà ở cột đó duy nhất ô đang xét có thể điền được        
 def The_Last_Remaining_Cell_In_Column(i, j):
     rowList = []
     rowList.clear()
@@ -99,6 +111,7 @@ def The_Last_Remaining_Cell_In_Column(i, j):
         square[i//3][j//3][num] = 1
         return
 
+# Điền vào ô trống giá trị mà ở ô vuông đó duy nhất ô đang xét có thể điền được        
 def The_Last_Remaining_Cell_In_Square(i, j):
     squareList = []
     squareList.clear()
@@ -128,7 +141,7 @@ def The_Last_Remaining_Cell_In_Square(i, j):
         return    
 
 
-# Soltion Sudoku
+# Giải ma trận Sudoku bằng phương pháp sinh thông thường
 def isSafe(aa, row, col, num):
     for x in range(9):
         if aa[row][x] == num:
@@ -187,6 +200,7 @@ for i in range(0, 9):
         else:
             square[i//3][j//3][a[i][j]] = 0
 
+# Xem xét những ô trống có thể điền được những giá trị gì
 for i in range(0, 9):
     for j in range(0, 9):
         if a[i][j] == 0:
@@ -196,17 +210,14 @@ for i in range(0, 9):
 
 # Solution of Sudoku
 if (solveSudoku(aa, 0, 0)):
-    for i in range(0, 9):
-        for j in range(0, 9):
-            print(aa[i][j], end = ' ')
-        print()
+    Print_Matrix(aa)
 else:
     print("no solution  exists ")
 
 print()
 
 
-# Solving step by step
+# Giải Sudoku theo từng bước giải
 for count in range(0, 100):
     Check_Again()
     Delete_Number_0()
@@ -236,11 +247,8 @@ for count in range(0, 100):
             if a[i][j] == 0:
                 The_Last_Remaining_Cell_In_Square(i, j)
 
-# Print Result and step Solving
-for i in range(0, 9):
-    for j in range(0, 9):
-        print(a[i][j], end = ' ')
-    print()
+# In đáp án cuối cùng sau khi hoàn thành giải theo từng bước
+Print_Matrix(a)
 
 for i in range(0, 9):
     for j in range(0, 9):
