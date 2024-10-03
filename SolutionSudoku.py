@@ -11,7 +11,7 @@ def Print_Matrix(matrix):
 # Đọc file Test và tạo file để lưu kết quả
 file = open('Result.txt', 'w')
 b = numpy.load('data.npz')['data']
-test_code = random.randint(0, 5000)
+test_code = random.randint(0, 10000)
 a = b[test_code].tolist()
 Print_Matrix(a)
 aa = copy.deepcopy(a)
